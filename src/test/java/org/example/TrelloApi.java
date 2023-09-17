@@ -59,7 +59,7 @@ public class TrelloApi {
             updateBoard();
             deleteBoard();
 
-            //This is the main method
+            //Any update is fine
 
         }
 
