@@ -21,6 +21,8 @@ public class TrelloApi {
     public static String apiToken = "ATTAfbc04e437e222c1644b4273b582ece1d821a5e1e2bc413a43adbe4ed85ca0245269C83CA";
     public static String boardId;
     public static int rowCount;
+
+    //Test
     public static String boardName, color, description;
 
 
