@@ -1,15 +1,17 @@
 package org.example;
 
+
+
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static io.restassured.RestAssured.given;
@@ -24,10 +26,6 @@ public class TrelloApi {
 
     //Test Test
     public static String boardName, color, description;
-
-
-
-
 
     @Test(priority = 0)
     public void dataDriven() throws IOException {
@@ -49,12 +47,12 @@ public class TrelloApi {
 
 
         rowCount = workSheet.getLastRowNum();
-        for (int i=1; i<=rowCount;i++){
+        for (int i = 1; i <= rowCount; i++) {
             boardName = workSheet.getRow(i).getCell(0).getStringCellValue();
             description = workSheet.getRow(i).getCell(1).getStringCellValue();
             color = workSheet.getRow(i).getCell(2).getStringCellValue();
 
-            System.out.println(boardName+" -> "+description+" -> "+color);
+            System.out.println(boardName + " -> " + description + " -> " + color);
 
             createBoard();
             getBoard();
@@ -66,19 +64,15 @@ public class TrelloApi {
         }
 
 
-
-
-
     }
-
 
 
     //Rest Assured contains 3 Methods
     //1-> given() - It means pre condition
     //2-> when() - Action Method / It contain http methods (GET,PUT,POST,PATCH,DELETE)
     //3-> then() - Output which is nothing but my result.
-    @Test(priority = 1,enabled = false)
-    public void createBoard(){
+    @Test(priority = 1, enabled = false)
+    public void createBoard() {
 
         //Step -1 = I've to add the Base URL
         //There are predefined libraries in RestAssured
@@ -90,81 +84,61 @@ public class TrelloApi {
         RestAssured.baseURI = baseURL;
 
         Response resp = given()
-                .queryParam("key",apiKey)
-                .queryParam("token",apiToken)
-                .queryParam("name","TrelloTest12")
-                .queryParam("prefs_background","orange")
-                .header("Content-Type","application/json")
+                .queryParam("key", apiKey)
+                .queryParam("token", apiToken)
+                .queryParam("name", "TrelloTest12")
+                .queryParam("prefs_background", "orange")
+                .header("Content-Type", "application/json")
 
-                .when()
-                .post("/1/boards/")
+                .when().post("/1/boards/")
 
-                .then()
-                .assertThat().statusCode(200)
-                .extract().response();
+                .then().assertThat().statusCode(200).extract().response();
 
         String JsonResp = resp.asString();
 
         //Get Board Id from the response.
 
-        JsonPath js=new JsonPath(JsonResp);
+        JsonPath js = new JsonPath(JsonResp);
         boardId = js.getJsonObject("id");
 
         System.out.println(boardId);
     }
 
 
-    @Test(priority = 2,enabled = false)
-    public void getBoard(){
+    @Test(priority = 2, enabled = false)
+    public void getBoard() {
         RestAssured.baseURI = baseURL;
 
-        Response respo = given()
-                .queryParam("key",apiKey)
-                .queryParam("token",apiToken)
+        Response respo = given().queryParam("key", apiKey).queryParam("token", apiToken)
 
 
-                .when()
-                .get("/1/boards/"+boardId)
+                .when().get("/1/boards/" + boardId)
 
-                .then().assertThat().statusCode(200)
-                .extract().response();
+                .then().assertThat().statusCode(200).extract().response();
 
         System.out.println(respo.asPrettyString());
     }
 
-    @Test(priority = 3,enabled = false)
-    public void updateBoard(){
+    @Test(priority = 3, enabled = false)
+    public void updateBoard() {
         RestAssured.baseURI = baseURL;
 
-        Response resp = given()
-                .queryParam("key",apiKey)
-                .queryParam("token",apiToken)
-                .queryParam("name",boardName)
-                .queryParam("desc",description)
-                .queryParam("prefs_background",color)
-                .header("Content-Type","application/json")
+        Response resp = given().queryParam("key", apiKey).queryParam("token", apiToken).queryParam("name", boardName).queryParam("desc", description).queryParam("prefs_background", color).header("Content-Type", "application/json")
 
-                .when().put("/1/boards/"+boardId)
+                .when().put("/1/boards/" + boardId)
 
-                .then().assertThat().statusCode(200)
-                .extract().response();
+                .then().assertThat().statusCode(200).extract().response();
     }
 
 
     @Test(priority = 4, enabled = false)
-    public void deleteBoard(){
+    public void deleteBoard() {
         RestAssured.baseURI = baseURL;
 
-        given()
-                .queryParam("key",apiKey)
-                .queryParam("token",apiToken)
-                .header("Content-Type","application/json")
+        given().queryParam("key", apiKey).queryParam("token", apiToken).header("Content-Type", "application/json")
 
-                .when()
-                .delete("/1/boards/"+boardId)
-                .then().assertThat().statusCode(200);
+                .when().delete("/1/boards/" + boardId).then().assertThat().statusCode(200);
     }
-
 
 
 }

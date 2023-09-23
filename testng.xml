@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="All Test Suite">
-    <test verbose="2" preserve-order="true" name="/Users/shubhrajitmohapatra/Downloads/Project/RestAssuredTest">
-        <classes><class name="org.example.TrelloApi">
-        </class>
+<suite name="All Test Suite" parallel="methods" thread-count="2">
+
+    <test name="Trello Api Test">
+        <classes>
+            <class name="org.example.TrelloApi"/>
         </classes>
     </test>
+
+    <test verbose="2" preserve-order="true" name="Simple Book Test">
+        <classes>
+
+            <class name="org.example.SimpleBooks"/>
+        </classes>
+    </test>
+
 </suite>
